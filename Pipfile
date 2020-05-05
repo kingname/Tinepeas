@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://mirrors.163.com/pypi/simple/"
+verify_ssl = true
+
+[dev-packages]
+mypy = "*"
+fastapi = "*"
+uvicorn = "*"
+jinja2 = "*"
+
+[packages]
+aiohttp = "*"
+lxml = "*"
+
+[requires]
+python_version = "3.7"
