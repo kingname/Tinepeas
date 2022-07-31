@@ -1,3 +1,3 @@
 from tinepeas import run
 
-run('ipspider')
+run('arch_spider')

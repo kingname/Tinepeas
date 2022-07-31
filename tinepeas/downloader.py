@@ -9,9 +9,14 @@ from . import Request, Response
 class Downloader:
     def __init__(self):
         self.response_queue: asyncio.Queue = Queue()
+        self.downloading_count = 0
+
+    def empty(self):
+        return self.response_queue.empty()
 
     async def download(self, request: Request):
         print('request for: ', request.url)
+        self.downloading_count += 1
         async with aiohttp.ClientSession() as client:
             try:
                 resp = await client.request(request.method,
@@ -23,6 +28,7 @@ class Downloader:
             raw_response = await resp.text(encoding=request.encoding)
         response = Response(body=raw_response, request=request)
         await self.response_queue.put(response)
+        self.downloading_count -= 1
 
     def get(self) -> Optional[Response]:
         try:

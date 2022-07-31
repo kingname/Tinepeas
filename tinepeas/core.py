@@ -1,7 +1,7 @@
 import uuid
 import asyncio
-from typing import Dict
 from collections import deque
+from typing import Dict, Generator
 from tinepeas.scheduler import Scheduler
 from tinepeas.downloader import Downloader
 from tinepeas.request import Request
@@ -43,7 +43,7 @@ class Core:
                 self.scheduler.schedule(request_to_schedule)
             request = self.scheduler.get()
             if request is None:
-                if not self.task_dict:
+                if not self.task_dict and downloader.downloading_count == 0 and downloader.empty():
                     break
             if isinstance(request, Request):
                 task = asyncio.create_task(downloader.download(request))
@@ -55,8 +55,10 @@ class Core:
             print('get response of: ', resp.url)
             callback = resp.request.callback
             request_generator = callback(resp)
-            if request_generator:
+            if isinstance(request_generator, Generator):
                 self.request_generator_queue.append(request_generator)
+            # elif isinstance(request_generator, Item):
+            #    ...
             self.check_task_done()
 
         await asyncio.sleep(10)
