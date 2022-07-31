@@ -56,7 +56,7 @@ class Core:
             callback = resp.request.callback
             request_generator = callback(resp)
             if isinstance(request_generator, Generator):
-                self.request_generator_queue.append(request_generator)
+                self.request_generator_queue.append(iter(request_generator))
             # elif isinstance(request_generator, Item):
             #    ...
             self.check_task_done()
